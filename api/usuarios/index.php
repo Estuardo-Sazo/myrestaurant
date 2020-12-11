@@ -3,9 +3,7 @@
 // Estabablecmos el modo de respuesta de tipo JSON
 header("Content-type: application/json");
 
-
 /// Guardamos el tipo de request para luego evalualro
-
 $REQUETS =$_SERVER['REQUEST_METHOD'];
 //Incluimos el dao encargao de hacer el CRUD de usuaios
 include_once('../control/usuario.control.php');
@@ -14,10 +12,8 @@ $user =new DaoUser;
 //Si el request es de tipo GET
 if($REQUETS=='GET'){
     $result['message']="Methd GET";
-
     echo json_encode($result);
 }
-
 
 //Si el request es de tipo POST
 if($REQUETS=='POST'){
