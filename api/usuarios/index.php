@@ -11,13 +11,20 @@ $user =new DaoUser;
 
 //Si el request es de tipo GET
 if($REQUETS=='GET'){
-    $result['message']="Methd GET";
-    echo json_encode($result);
+    $r;/// Variable para enviar la respuesta a la peticion
+
+    if(isset($_GET['id'])){
+        $result['message']="Methd GET:ID";
+    }else{
+        $r= json_encode($user->getUsers());
+    }
+    
+    echo $r;
 }
 
 //Si el request es de tipo POST
 if($REQUETS=='POST'){
-    $r;
+    $r;/// Variable para enviar la respuesta a la peticion
 
     //Evaluamos si es un login de usuario
     if(isset($_GET['login'])){
@@ -41,12 +48,31 @@ if($REQUETS=='POST'){
         $r= json_encode($result);
        }
 
-       echo $r;
-    }else{
+      
+    }else if(isset($_GET['add'])){
+        $_POST= json_decode(file_get_contents('php://input'),true); // Almacenamos las respuesta de app cliente
+        //Evalamos si ya exste el correo
+        $rpt= $user->evaCorreo($_POST['correo']); 
+        //Evalamos si ya exste el usuario    
+        $rptU= $user->evaUsuario($_POST['usuario']);
+       if(isset($rpt[0])){
+        $result['message']="Error Correo ya existe";
+        $r= json_encode($result);         
+       }else if(isset($rptU[0])){
+        $result['message']="Error Usuario ya existe";
+        $r= json_encode($result);       
+      }else{
+          $rr=$user->addUsuario($_POST);
+        $result['message']="Correcto";
+        $r= json_encode($result); 
+      }  
+
+    }   
+    else{
     $result['message']="Methd POST";
     echo json_encode($result);
     }
-
+    echo $r;
 }
 
 //Si el request es de tipo PUT
@@ -57,8 +83,18 @@ if($REQUETS=='PUT'){
 
 //Si el request es de tipo DELETE
 if($REQUETS=='DELETE'){
-    $result['message']="Methd DELETE";
-    echo json_encode($result);
+    $r;/// Variable para enviar la respuesta a la peticion
+
+    if(isset($_GET['id'])){
+        $user->delUsuario($_GET['id']);
+        $result['message']="Eliminado Usuario ID: ".$_GET['id'];
+       $r= json_encode($result);
+    }else {
+        $result['message']="Need ?id";
+       $r= json_encode($result);
+    }
+    
+    echo $r;
 }
 
 
